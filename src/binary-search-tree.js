@@ -69,85 +69,75 @@ class BinarySearchTree {
     return null;
   }
 
-  remove(data) {
-
-    /* let cur = this.rootNode;
-    let parent = null;
-    while (cur !== null) {
-      if (cur.data < data) {
-        parent = cur;
-        cur = cur.right;
-      } else if (cur.data > data) {
-        parent = cur;
-        cur = cur.left;
-      } else if (cur.data === data) {
-        if (parent === null) {
-          if (this.rootNode.left === null && this.rootNode.right === null) {
-            this.rootNode = null;
-            return;
-          } else {
-            let right = this.rootNode.right;
-            let left = this.rootNode.left;
-            
-            while (right !== null) {
-              cur = right;
-              while (cur.left !== null) {
+    remove(data) {
+        let cur = this.rootNode;
+        let parent = null;
+        while (cur !== null) {
+            if (cur.data < data) {
+                parent = cur;
+                cur = cur.right;
+            } else if (cur.data > data) {
                 parent = cur;
                 cur = cur.left;
-              }
-              right = cur.right;
+            } else if (cur.data === data) {
+                if (parent === null) {
+                    if (cur.left === null && cur.right === null) {
+                        this.rootNode = null;
+                        return;
+                    }
+                }
+                if(cur.right !== null) {
+                    cur.data = this.setNodeDataRight(cur, cur.right);
+                }else if(cur.left !== null) {
+                    cur.data = this.setNodeDataLeft(cur, cur.left);
+                }else{
+                    this.removeLeaf(parent, cur);
+                }
+                return;
             }
-          }
         }
-      }
-    } */
-    let cur = this.rootNode;
-    let parent = null;
-    while (cur !== null) {
-      if (cur.data < data) {
-        parent = cur;
-        cur = cur.right;
-      } else if (cur.data > data) {
-        parent = cur;
-        cur = cur.left;
-      } else if (cur.data === data) {
-        /*         if (parent === null) {
-                  if (this.rootNode.left === null && this.rootNode.right === null) {
-                    this.rootNode = null;
-                    return;
-                  } else {
-                  } */
-        cur.data = this.setNodeData(parent, cur);
-        return;
-      }
     }
-  }
 
-  setNodeData(parent, node) {
-    let value;
-    while (node.left !== null) {
-      parent = node;
-      node = node.left;
+    setNodeDataLeft(parent, node){
+        let value;
+        while (node.right !== null) {
+            parent = node;
+            node = node.right;
+        }
+        if (node.left !== null) {
+            value = node.data;
+            node.data = this.setNodeDataRight(node, node.left);
+            return value;
+        } else {
+            return this.removeLeaf(parent, node);
+        }
     }
-    if (node.right !== null) {
-      value = node.data;
-      node.data = this.setNodeData(node, node.right);
-      return value;
-    } else {
-      return this.removeLeaf(parent, node);
-    }
-  }
 
-  removeLeaf(parent,node) {
-    if (node.left === null && node.right === null) {
-      if (node.data > parent.data) {
-        parent.right = null;
-      } else {
-        parent.left = null;
-      }
-      return node.data;
+    setNodeDataRight(parent, node) {
+        let value;
+        while (node.left !== null) {
+            parent = node;
+            node = node.left;
+        }
+        if (node.right !== null) {
+            value = node.data;
+            node.data = this.setNodeDataRight(node, node.right);
+            return value;
+        } else {
+            return this.removeLeaf(parent, node);
+        }
     }
-  }
+
+    removeLeaf(parent, node) {
+        if (node.left === null && node.right === null) {
+            if (node.data > parent.data) {
+                parent.right = null;
+            } else {
+                parent.left = null;
+            }
+            return node.data;
+        }
+    }
 
   min() {
     if (this.rootNode) {
